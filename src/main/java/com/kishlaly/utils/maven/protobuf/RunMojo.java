@@ -6,6 +6,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -30,7 +31,9 @@ public class RunMojo extends AbstractMojo {
 
     private static final String DEFAULT_LOCATION = "/src/main/protobuf/";
 
+    @Component
     private MavenProject project;
+    @Component
     private BuildContext buildContext;
 
     @Parameter(property = "folders", defaultValue = "")
