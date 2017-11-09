@@ -51,6 +51,12 @@ public class RunMojo extends AbstractMojo {
     @Parameter(property = "failFast", defaultValue = "true")
     private String failFast;
 
+    @Parameter(property = "remoteFiles", defaultValue = "")
+    private String[] remoteFiles;
+
+    @Parameter(property = "remoteArchives", defaultValue = "")
+    private String[] remoteArchives;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         File outputFolder = new File(project.getBuild().getDirectory() + File.separator + output + File.separator);
