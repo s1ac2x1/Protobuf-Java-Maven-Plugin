@@ -15,9 +15,11 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Vladimir Kishlaly
@@ -60,6 +62,7 @@ public class RunMojo extends AbstractMojo {
             }
         }
 
+        Set<String> processedFiles = new HashSet<>();
         for (String folderStr : folders) {
             File folder = new File(folderStr);
             Collection files = FileUtils.listFiles(folder, new WildcardFileFilter("*.proto"), DirectoryFileFilter.DIRECTORY);
@@ -67,7 +70,9 @@ public class RunMojo extends AbstractMojo {
             Iterator<File> iterator = files.iterator();
             while (iterator.hasNext()) {
                 File next = iterator.next();
-                processFile(next, outputFolder);
+                if (processedFiles.add(next.getName())) {
+                    processFile(next, outputFolder);
+                }
             }
         }
 
@@ -86,13 +91,10 @@ public class RunMojo extends AbstractMojo {
         try {
             Process process = runtime.exec(command.toArray(new String[0]));
             if (process.waitFor() != 0) {
+                getLog().error("Failed to process " + file.getName());
                 if ("true".equals(failFast)) {
-                    getLog().error("Failed to process " + file.getName());
                     throw new MojoExecutionException("Exit code " + process.exitValue());
-                } else {
-                    getLog().error("Failed to process " + file.getName());
                 }
-
             }
         } catch (InterruptedException e) {
             throw new MojoExecutionException("Interrupted", e);
