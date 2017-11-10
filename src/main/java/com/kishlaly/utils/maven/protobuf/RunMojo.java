@@ -29,8 +29,6 @@ import java.util.Set;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.PACKAGE)
 public class RunMojo extends AbstractMojo {
 
-    private static final String DEFAULT_LOCATION = "/src/main/protobuf/";
-
     @Component
     private MavenProject project;
     @Component
