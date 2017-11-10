@@ -73,7 +73,7 @@ public class RunMojo extends AbstractMojo {
             while (iterator.hasNext()) {
                 File next = iterator.next();
                 if (processedFiles.add(next.getName())) {
-                    processFile(next, outputFolder);
+                    processFile(folder, next, outputFolder);
                 }
             }
         }
@@ -82,12 +82,12 @@ public class RunMojo extends AbstractMojo {
         buildContext.refresh(outputFolder);
     }
 
-    private void processFile(File file, File outputDir) throws MojoExecutionException {
+    private void processFile(File folder, File file, File outputDir) throws MojoExecutionException {
         getLog().info("    Processing " + file.getName());
         Runtime runtime = Runtime.getRuntime();
         List<String> command = new LinkedList<>();
         command.add(compiler);
-        command.add("-I" + file.getParentFile().getAbsolutePath());
+        command.add("-I" + folder);
         command.add("--java_out=" + outputDir);
         command.add(file.toString());
         try {
