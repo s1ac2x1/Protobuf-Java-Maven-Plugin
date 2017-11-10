@@ -13,8 +13,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -94,6 +96,13 @@ public class RunMojo extends AbstractMojo {
             Process process = runtime.exec(command.toArray(new String[0]));
             if (process.waitFor() != 0) {
                 getLog().error("Failed to process " + file.getName());
+                try (final BufferedReader b = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                    String line;
+                    if ((line = b.readLine()) != null)
+                        getLog().error("### " + line);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
                 if ("true".equals(failFast)) {
                     throw new MojoExecutionException("Exit code " + process.exitValue());
                 }
